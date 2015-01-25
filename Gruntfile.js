@@ -8,20 +8,28 @@ module.exports = function(grunt) {
 	// * for Stylus/Nib support, `npm install --save-dev grunt-contrib-stylus`
 
 	var npmDependencies = require('./package.json').devDependencies;
-	var hasSass = npmDependencies['grunt-contrib-sass'] !== undefined;
+	var hasSass    = npmDependencies['grunt-contrib-sass'] !== undefined;
+	var hasCompass = npmDependencies['grunt-contrib-compass'] !== undefined;
 	var hasStylus = npmDependencies['grunt-contrib-stylus'] !== undefined;
 
 	grunt.initConfig({
 
 		// Watches for changes and runs tasks
 		watch : {
-			sass : {
-				files : ['scss/**/*.scss'],
-				tasks : (hasSass) ? ['sass:dev'] : null,
-				options : {
+			// sass : {
+			// 	files : ['scss/**/*.scss'],
+			// 	tasks : (hasSass) ? ['sass:dev'] : null,
+			// 	options : {
+			// 		livereload : true
+			// 	}
+			// },
+			compass: {
+        files: ['scss/{,*/}*.{scss,sass}'],
+        tasks: (hasCompass) ? ['compass:server'] : null,
+        options : {
 					livereload : true
 				}
-			},
+      },
 			stylus : {
 				files : ['stylus/**/*.styl'],
 				tasks : (hasStylus) ? ['stylus:dev'] : null,
@@ -30,11 +38,15 @@ module.exports = function(grunt) {
 				}
 			},
 			js : {
-				files : ['js/**/*.js'],
-				tasks : ['jshint'],
+				files : ['js/*.js', 'js/bespoke/**/*.js', '!js/*.min.js'],
+				tasks : ['jshint', 'uglify'],
 				options : {
 					livereload : true
 				}
+			},
+			bower : {
+				files : ['js/vendor/**/*.js'],
+				tasks : ['bower_concat'],
 			},
 			php : {
 				files : ['**/*.php'],
@@ -46,7 +58,7 @@ module.exports = function(grunt) {
 
 		// JsHint your javascript
 		jshint : {
-			all : ['js/*.js', '!js/modernizr.js', '!js/*.min.js', '!js/vendor/**/*.js'],
+			all : ['js/*.js', '!js/modernizr.js', '!js/*.min.js', '!js/_bower.js', '!js/vendor/**/*.js'],
 			options : {
 				browser: true,
 				curly: false,
@@ -94,6 +106,34 @@ module.exports = function(grunt) {
 			}
 		},
 
+		compass: {
+      options: {
+        sassDir: 'scss',
+        cssDir: 'css',
+        generatedImagesDir: 'images/generated',
+        imagesDir: 'images',
+        javascriptsDir: 'js',
+        fontsDir: 'css/fonts',
+        importPath: 'js/vendor',
+        httpImagesPath: '/images',
+        httpGeneratedImagesPath: '/images/generated',
+        httpFontsPath: '/css/fonts',
+        relativeAssets: false
+      },
+      dist: {},
+      server: {
+        options: {
+          debugInfo: true
+        }
+      }
+    },
+
+    concurrent: {
+      server: [
+        'compass:server'
+      ],
+    },
+
 		// Dev and production build for stylus
 		stylus : {
 			production : {
@@ -133,6 +173,15 @@ module.exports = function(grunt) {
 			}
 		},
 
+		bower_concat : {
+			all : {
+				dest: 'js/_bower.js',
+				bowerOptions: {
+		      relative: false
+		    }
+		  }
+		},
+
 		// Require config
 		requirejs : {
 			production : {
@@ -141,6 +190,17 @@ module.exports = function(grunt) {
 					baseUrl : 'js',
 					mainConfigFile : 'js/global.js',
 					out : 'js/optimized.min.js'
+				}
+			}
+		},
+
+		uglify: {
+			options: {
+				mangle: false
+			},
+			production: {
+				files: {
+					'js/main.min.js': ['js/_bower.js', 'js/bespoke/**/*.js', 'js/main.js']
 				}
 			}
 		},
@@ -173,10 +233,11 @@ module.exports = function(grunt) {
 			}
 		}
 
+
 	});
 
 	// Default task
-	grunt.registerTask('default', ['watch']);
+	grunt.registerTask('default', ['concurrent:server', 'watch']);
 
 	// Build task
 	grunt.registerTask('build', function() {
@@ -199,6 +260,10 @@ module.exports = function(grunt) {
 	grunt.registerTask('setup', function() {
 		var arr = [];
 
+		if(hasCompass) {
+			//TODO add compass to list of tasks
+		}
+
 		if (hasSass) {
 			arr.push['sass:dev'];
 		}
@@ -211,6 +276,12 @@ module.exports = function(grunt) {
 	});
 
 	// Load up tasks
+	if (hasCompass) {
+		grunt.loadNpmTasks('grunt-concurrent');
+		grunt.loadNpmTasks('grunt-contrib-compass');
+	}
+
+	// Load up tasks
 	if (hasSass) {
 		grunt.loadNpmTasks('grunt-contrib-sass');
 	}
@@ -221,8 +292,10 @@ module.exports = function(grunt) {
 	
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-bower-requirejs');
-	grunt.loadNpmTasks('grunt-contrib-requirejs');
+	grunt.loadNpmTasks('grunt-bower-concat');
+	// grunt.loadNpmTasks('grunt-bower-requirejs');
+	// grunt.loadNpmTasks('grunt-contrib-requirejs');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-imagemin');
 	grunt.loadNpmTasks('grunt-svgmin');
 
