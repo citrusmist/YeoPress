@@ -5,14 +5,58 @@ function theme_enqueue_scripts(){
 	wp_register_script('modernizr', get_bloginfo('template_url') . '/js/modernizr.js');
 	wp_enqueue_script('modernizr');
 
-	wp_register_script('require', get_bloginfo('template_url') . '/js/vendor/requirejs/require.js', array(), false, true);
-	wp_enqueue_script('require');
+	if( WP_ENV == 'local') {
 
-	wp_register_script('global', get_bloginfo('template_url') . '/js/global.js', array('require'), false, true);
-	wp_enqueue_script('global');
+		// README If using require.js uncomment following lines
+		// wp_register_script('require', get_bloginfo('template_url') . '/js/vendor/requirejs/require.js', array(), false, true);
+		// wp_register_script('global', get_bloginfo('template_url') . '/js/global.js', array('require'), false, true);
 
-	wp_register_script('livereload', '<%= conf.get('url') %>:35729/livereload.js?snipver=1', null, false, true);
-	wp_enqueue_script('livereload');
+		wp_register_script('livereload', '<%= conf.get('url') %>:35729/livereload.js?snipver=1', null, false, true);
+		
+		wp_register_script(
+			'main', 
+			get_bloginfo('template_url') . '/js/main.js', 
+			null, 
+			array('jquery'), 
+			true
+		);
+
+		wp_enqueue_script('livereload');
+	}
+
+	if( WP_ENV == 'staging') {
+		//staging stuff here
+
+		// README If using require.js uncomment following lines
+		// wp_register_script('global', get_bloginfo('template_url') . '/js/optimized.min.js', array(), false, true);
+
+		wp_register_script(
+			'main', 
+			get_bloginfo('template_url') . '/js/main.min.js', 
+			null, 
+			array('jquery'), 
+			true
+		);
+	}
+
+	if( WP_ENV == 'production') { 
+		//production stuff here
+
+		// README If using require.js uncomment following lines
+		// wp_register_script('global', get_bloginfo('template_url') . '/js/optimized.min.js', array(), false, true);
+		wp_register_script(
+			'main', 
+			get_bloginfo('template_url') . '/js/main.min.js', 
+			null, 
+			array('jquery'), 
+			true
+		);
+	}
+
+	// README If using require.js uncomment following lines
+	// wp_enqueue_script('global');
+
+	wp_enqueue_script('main');
 
 	wp_enqueue_style('global', get_bloginfo('template_url') . '/css/global.css');
 }
