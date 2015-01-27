@@ -16,20 +16,20 @@ module.exports = function(grunt) {
 
 		// Watches for changes and runs tasks
 		watch : {
-			// sass : {
-			// 	files : ['scss/**/*.scss'],
-			// 	tasks : (hasSass) ? ['sass:dev'] : null,
-			// 	options : {
-			// 		livereload : true
-			// 	}
-			// },
-			compass: {
-        files: ['scss/{,*/}*.{scss,sass}'],
-        tasks: (hasCompass) ? ['compass:server'] : null,
-        options : {
+			sass : {
+				files : ['scss/**/*.scss'],
+				tasks : (hasSass) ? ['sass:dev'] : null,
+				options : {
 					livereload : true
 				}
-      },
+			},
+			// compass: {
+   //      files: ['scss/{,*/}*.{scss,sass}'],
+   //      tasks: (hasCompass) ? ['compass:server'] : null,
+   //      options : {
+			// 		livereload : true
+			// 	}
+   //    },
 			stylus : {
 				files : ['stylus/**/*.styl'],
 				tasks : (hasStylus) ? ['stylus:dev'] : null,
