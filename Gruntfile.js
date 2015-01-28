@@ -1,16 +1,19 @@
 module.exports = function(grunt) {
 
-	// To support SASS/SCSS or Stylus, just install
+	// To support SASS/SCSS, Stylus, Compass or RequireJS just install
 	// the appropriate grunt package and it will be automatically included
 	// in the build process, Sass is included by default:
 	//
-	// * for SASS/SCSS support, run `npm install --save-dev grunt-contrib-sass`
-	// * for Stylus/Nib support, `npm install --save-dev grunt-contrib-stylus`
+	// * for SASS/SCSS support,  run `npm install --save-dev grunt-contrib-sass`
+	// * for Stylus/Nib support, run `npm install --save-dev grunt-contrib-stylus`
+	// * for Compass support,    run `npm install --save-dev grunt-contrib-compass`
+	// * for RequireJS support,  run `npm install --save-dev grunt-contrib-requirejs`
 
 	var npmDependencies = require('./package.json').devDependencies;
-	var hasSass    = npmDependencies['grunt-contrib-sass'] !== undefined;
-	var hasCompass = npmDependencies['grunt-contrib-compass'] !== undefined;
-	var hasStylus = npmDependencies['grunt-contrib-stylus'] !== undefined;
+	var hasRequireJs = npmDependencies['grunt-contrib-requirejs'] !== undefined;
+	var hasSass      = npmDependencies['grunt-contrib-sass'] !== undefined;
+	var hasCompass   = npmDependencies['grunt-contrib-compass'] !== undefined;
+	var hasStylus    = npmDependencies['grunt-contrib-stylus'] !== undefined;
 
 	grunt.initConfig({
 
@@ -23,13 +26,13 @@ module.exports = function(grunt) {
 					livereload : true
 				}
 			},
-			// compass: {
-   //      files: ['scss/{,*/}*.{scss,sass}'],
-   //      tasks: (hasCompass) ? ['compass:server'] : null,
-   //      options : {
-			// 		livereload : true
-			// 	}
-   //    },
+			compass: {
+        files: ['scss/{,*/}*.{scss,sass}'],
+        tasks: (hasCompass) ? ['compass:server'] : null,
+        options : {
+					livereload : true
+				}
+      },
 			stylus : {
 				files : ['stylus/**/*.styl'],
 				tasks : (hasStylus) ? ['stylus:dev'] : null,
@@ -243,6 +246,10 @@ module.exports = function(grunt) {
 	grunt.registerTask('build', function() {
 		var arr = ['jshint'];
 
+		if (hasCompass) {
+			arr.push('compass:dist');
+		}
+
 		if (hasSass) {
 			arr.push('sass:production');
 		}
@@ -251,7 +258,11 @@ module.exports = function(grunt) {
 			arr.push('stylus:production');
 		}
 
-		arr.push('imagemin:production', 'svgmin:production', 'requirejs:production');
+		arr.push('imagemin:production', 'svgmin:production');
+
+		if (hasRequireJs) {
+			arr.push('requirejs:production');	
+		}
 
 		return arr;
 	});
@@ -261,11 +272,11 @@ module.exports = function(grunt) {
 		var arr = [];
 
 		if(hasCompass) {
-			//TODO add compass to list of tasks
+			arr.push('compass:server');
 		}
 
 		if (hasSass) {
-			arr.push['sass:dev'];
+			arr.push('sass:dev');
 		}
 
 		if (hasStylus) {
@@ -290,11 +301,14 @@ module.exports = function(grunt) {
 		grunt.loadNpmTasks('grunt-contrib-stylus');
 	}
 	
+	if(hasRequireJs) {
+		grunt.loadNpmTasks('grunt-bower-requirejs');
+		grunt.loadNpmTasks('grunt-contrib-requirejs');
+	}
+
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-bower-concat');
-	// grunt.loadNpmTasks('grunt-bower-requirejs');
-	// grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-imagemin');
 	grunt.loadNpmTasks('grunt-svgmin');
