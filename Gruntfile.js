@@ -241,7 +241,18 @@ module.exports = function(grunt) {
 	});
 
 	// Default task
-	grunt.registerTask('default', ['concurrent:server', 'watch']);
+	grunt.registerTask('default', function() {
+			var arr = [];
+
+			if (hasCompass) {
+				arr.push('concurrent:server');
+			}
+
+			arr.push('watch');
+
+			return arr;
+		}
+	);
 
 	// Build task
 	grunt.registerTask('build', function() {
