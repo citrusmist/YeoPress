@@ -8,6 +8,7 @@ module.exports = function(grunt) {
 	// * for Stylus/Nib support, run `npm install --save-dev grunt-contrib-stylus`
 	// * for Compass support,    run `npm install --save-dev grunt-contrib-compass`
 	// * for RequireJS support,  run `npm install --save-dev grunt-contrib-requirejs`
+	// *                     and run `npm install --save-dev grunt-bower-requirejs`
 
 	var npmDependencies = require('./package.json').devDependencies;
 	var hasRequireJs = npmDependencies['grunt-contrib-requirejs'] !== undefined;
