@@ -242,17 +242,16 @@ module.exports = function(grunt) {
 
 	// Default task
 	grunt.registerTask('default', function() {
-			var arr = [];
+		var arr = [];
 
-			if (hasCompass) {
-				arr.push('concurrent:server');
-			}
-
-			arr.push('watch');
-
-			return arr;
+		if (hasCompass) {
+			arr.push('concurrent:server');
 		}
-	);
+
+		arr.push('watch');
+
+		grunt.task.run(arr);
+	});
 
 	// Build task
 	grunt.registerTask('build', function() {
@@ -276,7 +275,7 @@ module.exports = function(grunt) {
 			arr.push('requirejs:production');	
 		}
 
-		return arr;
+		grunt.task.run(arr);
 	});
 
 	// Template Setup Task
@@ -296,6 +295,8 @@ module.exports = function(grunt) {
 		}
 
 		arr.push('bower-install');
+
+		grunt.task.run(arr);
 	});
 
 	// Load up tasks
