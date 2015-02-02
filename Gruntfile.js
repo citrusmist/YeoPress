@@ -22,24 +22,15 @@ module.exports = function(grunt) {
 		watch : {
 			sass : {
 				files : ['scss/**/*.scss'],
-				tasks : (hasSass) ? ['sass:dev'] : null,
-				options : {
-					livereload : true
-				}
+				tasks : (hasSass) ? ['sass:dev'] : null
 			},
 			compass: {
         files: ['scss/{,*/}*.{scss,sass}'],
-        tasks: (hasCompass) ? ['compass:server'] : null,
-        options : {
-					livereload : true
-				}
+        tasks: (hasCompass) ? ['compass:server'] : null
       },
 			stylus : {
 				files : ['stylus/**/*.styl'],
-				tasks : (hasStylus) ? ['stylus:dev'] : null,
-				options: {
-					livereload : true
-				}
+				tasks : (hasStylus) ? ['stylus:dev'] : null
 			},
 			js : {
 				files : ['js/*.js', 'js/bespoke/**/*.js', '!js/*.min.js'],
@@ -57,7 +48,13 @@ module.exports = function(grunt) {
 				options : {
 					livereload : true
 				}
-			}
+			},
+			css : {
+ 				files : ['css/**/*.css'],
+ 				options : {
+ 					livereload : true
+ 				}
+ 			},
 		},
 
 		// JsHint your javascript
