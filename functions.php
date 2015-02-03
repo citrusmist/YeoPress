@@ -5,7 +5,21 @@ function theme_enqueue_scripts(){
 	wp_register_script('modernizr', get_bloginfo('template_url') . '/js/modernizr.js');
 	wp_enqueue_script('modernizr');
 
-	if( WP_ENV == 'local') {
+
+	if( WP_ENV == 'staging' || WP_ENV == 'production' ) {
+		//staging and production stuff here
+
+		// README If using require.js uncomment following lines
+		// wp_register_script('global', get_bloginfo('template_url') . '/js/optimized.min.js', array(), false, true);
+
+		wp_register_script(
+			'main', 
+			get_bloginfo('template_url') . '/js/main.min.js', 
+			null, 
+			array('jquery'), 
+			true
+		);
+	} else {
 
 		// README If using require.js uncomment following lines
 		// wp_register_script('require', get_bloginfo('template_url') . '/js/vendor/requirejs/require.js', array(), false, true);
@@ -24,34 +38,6 @@ function theme_enqueue_scripts(){
 		wp_enqueue_script('livereload');
 	}
 
-	if( WP_ENV == 'staging') {
-		//staging stuff here
-
-		// README If using require.js uncomment following lines
-		// wp_register_script('global', get_bloginfo('template_url') . '/js/optimized.min.js', array(), false, true);
-
-		wp_register_script(
-			'main', 
-			get_bloginfo('template_url') . '/js/main.min.js', 
-			null, 
-			array('jquery'), 
-			true
-		);
-	}
-
-	if( WP_ENV == 'production') { 
-		//production stuff here
-
-		// README If using require.js uncomment following lines
-		// wp_register_script('global', get_bloginfo('template_url') . '/js/optimized.min.js', array(), false, true);
-		wp_register_script(
-			'main', 
-			get_bloginfo('template_url') . '/js/main.min.js', 
-			null, 
-			array('jquery'), 
-			true
-		);
-	}
 
 	// README If using require.js uncomment following lines
 	// wp_enqueue_script('global');
