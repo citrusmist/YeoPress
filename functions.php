@@ -15,8 +15,8 @@ function theme_enqueue_scripts(){
 		wp_register_script(
 			'main', 
 			get_bloginfo('template_url') . '/js/main.min.js', 
-			null, 
 			array('jquery'), 
+			false, 
 			true
 		);
 	} else {
@@ -30,8 +30,8 @@ function theme_enqueue_scripts(){
 		wp_register_script(
 			'main', 
 			get_bloginfo('template_url') . '/js/main.js', 
-			null, 
 			array('jquery'), 
+			false, 
 			true
 		);
 
