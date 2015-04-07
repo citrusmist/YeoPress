@@ -1,6 +1,6 @@
 {
   "name": "generator-wordpress",
-  "version": "1.4.3",
+  "version": "2.0.0",
   "description": "A Yeoman generator for WordPress",
   "keywords": [
     "yeoman-generator",
@@ -13,13 +13,13 @@
   "author": "Wes Todd",
   "license": "BSD",
   "dependencies": {
-    "yeoman-generator": "^0.16.0",
-    "wrench": "^1.4.4",
-    "mysql": "^2.0.1",
     "chalk": "^0.2.1",
-    "simple-git": "^0.2.0",
     "mkdirp": "^0.3.5",
-    "wp-util": "^0.1.4"
+    "mysql": "^2.0.1",
+    "simple-git": "^0.14.0",
+    "wrench": "^1.4.4",
+    "yeoman-generator": "^0.18.7",
+    "wp-util": "^0.1.6"
   },
   "repository": {
     "type": "git",
