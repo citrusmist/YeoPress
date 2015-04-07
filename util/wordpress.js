@@ -240,7 +240,7 @@ function installTheme(generator, config, done) {
 		generator.remote(config.themeUser, config.themeRepo, config.themeBranch, function(err, remote) {
 			remote.directory('.', path.join(config.contentDir, 'themes', config.themeDir));
 			done();
-		});
+		}, config.refreshRemote);
 	} else if (config.themeType == 'tar') {
 		generator.tarball(config.themeTarballUrl, path.join(config.contentDir, 'themes', config.themeDir), done);
 	}
@@ -254,18 +254,36 @@ function setupTheme(generator, config, done) {
 	var themePath = path.join(config.contentDir, 'themes', config.themeDir),
 		themePackageJson = path.join(themePath, 'package.json');
 
+	var themeTaskFile = '',
+		themeTaskCmd = '';
+
+	if (config.themeTaskRunner == 'grunt') {
+		themeTaskFile = 'Gruntfile.js',
+		themeTaskCmd = 'grunt';
+	} else if (config.themeTaskRunner == 'gulp') {
+		themeTaskFile = 'gulpfile.js',
+		themeTaskCmd = 'gulp';
+	}
+
 	if (fs.existsSync(themePackageJson)) {
 		var oldDir = process.cwd();
 		process.chdir(themePath);
-		exec('npm install', function(err) {
-			if (fs.existsSync('Gruntfile.js')) {
-				exec('grunt setup', function(err) {
+		console.log(chalk.green('Installing Node Packages (be patient)'));
+
+		exec('npm install', function(err, stdout, stderr) {
+			if (err) {
+				console.error('Error installing packages', err, stdout, stderr);
+				return done();
+			}
+
+			if (fs.existsSync(themeTaskFile)) {
+				exec(themeTaskCmd + ' setup', function(err) {
 					console.log(chalk.green('Theme setup!'));
 					process.chdir(oldDir);
 					done();
 				});
 			} else {
-				console.log(chalk.red('Gruntfile.js missing!'));
+				console.log(chalk.red(themeTaskFile + ' missing!'));
 				process.chdir(oldDir);
 				done();
 			}
